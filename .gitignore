@@ -1,0 +1,9 @@
+.next
+node_modules
+release
+shindan-app-release.tar.gz
+yourbrain-shindan-bridge.zip
+tsconfig.tsbuildinfo
+.DS_Store
+data/diagnosis-submissions.json
+.env.production
