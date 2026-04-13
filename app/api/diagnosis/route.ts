@@ -57,34 +57,47 @@ function validateAnswers(answers?: DiagnosisAnswers) {
 }
 
 export async function POST(request: Request) {
-  const body = (await request.json()) as RequestBody;
-  const leadError = validateLead(body.lead);
+  try {
+    const body = (await request.json()) as RequestBody;
+    const leadError = validateLead(body.lead);
 
-  if (leadError) {
-    return NextResponse.json({ error: leadError }, { status: 400 });
+    if (leadError) {
+      return NextResponse.json({ error: leadError }, { status: 400 });
+    }
+
+    const answersError = validateAnswers(body.answers);
+
+    if (answersError) {
+      return NextResponse.json({ error: answersError }, { status: 400 });
+    }
+
+    const lead = body.lead as LeadFormValues;
+    const answers = body.answers as DiagnosisAnswers;
+    const result = generateDiagnosisResult(answers);
+    const submission: DiagnosisSubmission = {
+      id: randomUUID(),
+      createdAt: new Date().toISOString(),
+      lead,
+      answers,
+      result
+    };
+
+    await saveSubmission(submission);
+
+    return NextResponse.json({
+      id: submission.id,
+      result
+    });
+  } catch (error) {
+    console.error("diagnosis submission failed", error);
+
+    const message = error instanceof Error ? error.message : "診断結果の保存に失敗しました。";
+
+    return NextResponse.json(
+      {
+        error: message || "診断結果の保存に失敗しました。"
+      },
+      { status: 500 }
+    );
   }
-
-  const answersError = validateAnswers(body.answers);
-
-  if (answersError) {
-    return NextResponse.json({ error: answersError }, { status: 400 });
-  }
-
-  const lead = body.lead as LeadFormValues;
-  const answers = body.answers as DiagnosisAnswers;
-  const result = generateDiagnosisResult(answers);
-  const submission: DiagnosisSubmission = {
-    id: randomUUID(),
-    createdAt: new Date().toISOString(),
-    lead,
-    answers,
-    result
-  };
-
-  await saveSubmission(submission);
-
-  return NextResponse.json({
-    id: submission.id,
-    result
-  });
 }

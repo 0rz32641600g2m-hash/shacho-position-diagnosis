@@ -124,10 +124,21 @@ export function DiagnosisForm() {
       })
     })
       .then(async (response) => {
-        const payload = (await response.json()) as { id?: string; error?: string };
+        const raw = await response.text();
+        let payload: { id?: string; error?: string } = {};
+
+        if (raw) {
+          try {
+            payload = JSON.parse(raw) as { id?: string; error?: string };
+          } catch {
+            payload = {};
+          }
+        }
 
         if (!response.ok || !payload.id) {
-          throw new Error(payload.error ?? "保存に失敗しました。");
+          throw new Error(
+            payload.error ?? "送信エラーが発生しました。時間を置いて再度お試しください。"
+          );
         }
 
         router.push(`/result?id=${payload.id}`);
