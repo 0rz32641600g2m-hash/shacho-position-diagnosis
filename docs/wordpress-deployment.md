@@ -26,6 +26,7 @@ define('YOURBRAIN_SHINDAN_API_TOKEN', 'replace-with-shared-secret');
 
 - Vercel 側にも同じ `WORDPRESS_API_TOKEN` を設定
 - `Authorization` ヘッダーではなく独自トークンを優先利用
+- `wp-json` の POST が 403 の場合は `wp-admin/admin-post.php` へ自動フォールバック
 
 ## 公開方式
 

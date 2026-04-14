@@ -20,6 +20,8 @@ final class YourBrain_Shindan_Bridge {
 		register_activation_hook(__FILE__, [$this, 'activate']);
 		add_action('rest_api_init', [$this, 'register_rest_routes']);
 		add_action('admin_menu', [$this, 'register_admin_page']);
+		add_action('admin_post_yourbrain_shindan_submit', [$this, 'handle_admin_post_submission']);
+		add_action('admin_post_nopriv_yourbrain_shindan_submit', [$this, 'handle_admin_post_submission']);
 	}
 
 	public function activate(): void {
@@ -110,35 +112,64 @@ final class YourBrain_Shindan_Bridge {
 		return $param_token;
 	}
 
-	public function create_submission(WP_REST_Request $request): WP_REST_Response {
-		global $wpdb;
+	private function parse_submission_params($params): array {
+		if (!is_array($params)) {
+			return [];
+		}
 
-		$params = $request->get_json_params();
-		$lead = isset($params['lead']) ? $params['lead'] : [];
-		$result = isset($params['result']) ? $params['result'] : [];
+		$lead = isset($params['lead']) && is_array($params['lead']) ? $params['lead'] : [];
+		$result = isset($params['result']) && is_array($params['result']) ? $params['result'] : [];
+
+		return [
+			'id' => sanitize_text_field($params['id'] ?? ''),
+			'created_at' => gmdate('Y-m-d H:i:s', strtotime($params['createdAt'] ?? 'now')),
+			'company_name' => sanitize_text_field($lead['companyName'] ?? ''),
+			'contact_name' => sanitize_text_field($lead['contactName'] ?? ''),
+			'email' => sanitize_email($lead['email'] ?? ''),
+			'phone' => sanitize_text_field($lead['phone'] ?? ''),
+			'consent' => !empty($lead['consent']) ? 1 : 0,
+			'overall_phase' => sanitize_text_field($result['overallPhase'] ?? ''),
+			'evaluation_value' => intval($result['evaluationValue'] ?? 0),
+			'evaluation_label' => sanitize_text_field($result['evaluationLabel'] ?? ''),
+			'grade' => sanitize_text_field($result['grade'] ?? ''),
+			'total_score' => intval($result['totalScore'] ?? 0),
+			'answers' => wp_json_encode($params['answers'] ?? [], JSON_UNESCAPED_UNICODE),
+			'result_json' => wp_json_encode($result, JSON_UNESCAPED_UNICODE),
+		];
+	}
+
+	private function insert_submission_row(array $params): void {
+		global $wpdb;
 
 		$wpdb->insert(
 			$this->table_name,
-			[
-				'id' => sanitize_text_field($params['id']),
-				'created_at' => gmdate('Y-m-d H:i:s', strtotime($params['createdAt'])),
-				'company_name' => sanitize_text_field($lead['companyName'] ?? ''),
-				'contact_name' => sanitize_text_field($lead['contactName'] ?? ''),
-				'email' => sanitize_email($lead['email'] ?? ''),
-				'phone' => sanitize_text_field($lead['phone'] ?? ''),
-				'consent' => !empty($lead['consent']) ? 1 : 0,
-				'overall_phase' => sanitize_text_field($result['overallPhase'] ?? ''),
-				'evaluation_value' => intval($result['evaluationValue'] ?? 0),
-				'evaluation_label' => sanitize_text_field($result['evaluationLabel'] ?? ''),
-				'grade' => sanitize_text_field($result['grade'] ?? ''),
-				'total_score' => intval($result['totalScore'] ?? 0),
-				'answers' => wp_json_encode($params['answers'], JSON_UNESCAPED_UNICODE),
-				'result_json' => wp_json_encode($result, JSON_UNESCAPED_UNICODE),
-			],
+			$this->parse_submission_params($params),
 			['%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%s', '%s', '%d', '%s', '%s']
 		);
+	}
+
+	public function create_submission(WP_REST_Request $request): WP_REST_Response {
+		$params = $request->get_json_params();
+		$this->insert_submission_row($params);
 
 		return new WP_REST_Response(['id' => sanitize_text_field($params['id'])], 201);
+	}
+
+	public function handle_admin_post_submission(): void {
+		if (!$this->authorize_api()) {
+			status_header(403);
+			wp_die('Forbidden');
+		}
+
+		$raw_payload = isset($_POST['payload']) ? wp_unslash($_POST['payload']) : file_get_contents('php://input');
+		$params = json_decode($raw_payload, true);
+
+		if (!is_array($params)) {
+			wp_send_json(['error' => 'Invalid payload'], 400);
+		}
+
+		$this->insert_submission_row($params);
+		wp_send_json(['id' => sanitize_text_field($params['id'] ?? '')], 201);
 	}
 
 	public function get_submission(WP_REST_Request $request): WP_REST_Response {

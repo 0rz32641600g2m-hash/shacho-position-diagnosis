@@ -3,6 +3,10 @@ import { createDiagnosisSubmission, getDiagnosisSubmissionById } from "@/lib/dia
 
 type CreateSubmissionInput = DiagnosisSubmission;
 
+function isHtml403Response(message: string) {
+  return message.includes("<title>403 Forbidden</title>") || message.includes("403 Forbidden");
+}
+
 function hasWordPressBackend() {
   return Boolean(
     process.env.WORDPRESS_API_BASE &&
@@ -50,6 +54,51 @@ async function createWordPressSubmission(submission: CreateSubmissionInput) {
     method: "POST",
     headers: buildWordPressHeaders(),
     body: JSON.stringify(submission),
+    cache: "no-store"
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    if (message && isHtml403Response(message)) {
+      await createWordPressSubmissionViaAdminPost(submission);
+      return;
+    }
+
+    throw new Error(message || "WordPressへの保存に失敗しました。");
+  }
+}
+
+function buildAdminPostUrl() {
+  const base = process.env.WORDPRESS_API_BASE;
+
+  if (!base) {
+    throw new Error("WordPress APIの接続先が設定されていません。");
+  }
+
+  const token = process.env.WORDPRESS_API_TOKEN;
+  const siteBase = base.replace(/\/wp-json\/yourbrain-shindan\/v1\/?$/, "");
+  const url = new URL("/wp-admin/admin-post.php", siteBase);
+
+  url.searchParams.set("action", "yourbrain_shindan_submit");
+
+  if (token) {
+    url.searchParams.set("token", token);
+  }
+
+  return url.toString();
+}
+
+async function createWordPressSubmissionViaAdminPost(submission: CreateSubmissionInput) {
+  const body = new URLSearchParams({
+    payload: JSON.stringify(submission)
+  });
+
+  const response = await fetch(buildAdminPostUrl(), {
+    method: "POST",
+    headers: new Headers({
+      "Content-Type": "application/x-www-form-urlencoded"
+    }),
+    body: body.toString(),
     cache: "no-store"
   });
 
