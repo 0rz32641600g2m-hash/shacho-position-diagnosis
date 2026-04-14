@@ -22,6 +22,8 @@ final class YourBrain_Shindan_Bridge {
 		add_action('admin_menu', [$this, 'register_admin_page']);
 		add_action('admin_post_yourbrain_shindan_submit', [$this, 'handle_admin_post_submission']);
 		add_action('admin_post_nopriv_yourbrain_shindan_submit', [$this, 'handle_admin_post_submission']);
+		add_action('admin_post_yourbrain_shindan_fetch', [$this, 'handle_admin_post_fetch']);
+		add_action('admin_post_nopriv_yourbrain_shindan_fetch', [$this, 'handle_admin_post_fetch']);
 	}
 
 	public function activate(): void {
@@ -172,17 +174,32 @@ final class YourBrain_Shindan_Bridge {
 		wp_send_json(['id' => sanitize_text_field($params['id'] ?? '')], 201);
 	}
 
-	public function get_submission(WP_REST_Request $request): WP_REST_Response {
-		global $wpdb;
-
-		$id = sanitize_text_field($request['id']);
-		$row = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$this->table_name} WHERE id = %s", $id), ARRAY_A);
-
-		if (!$row) {
-			return new WP_REST_Response(['message' => 'Not found'], 404);
+	public function handle_admin_post_fetch(): void {
+		if (!$this->authorize_api()) {
+			status_header(403);
+			wp_die('Forbidden');
 		}
 
-		return new WP_REST_Response([
+		$id = isset($_GET['id']) ? sanitize_text_field(wp_unslash($_GET['id'])) : '';
+		$row = $this->get_submission_row($id);
+
+		if (!$row) {
+			wp_send_json(['message' => 'Not found'], 404);
+		}
+
+		wp_send_json($this->format_submission_response($row), 200);
+	}
+
+	private function get_submission_row(string $id): ?array {
+		global $wpdb;
+
+		$row = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$this->table_name} WHERE id = %s", $id), ARRAY_A);
+
+		return is_array($row) ? $row : null;
+	}
+
+	private function format_submission_response(array $row): array {
+		return [
 			'id' => $row['id'],
 			'createdAt' => get_date_from_gmt($row['created_at'], DATE_ATOM),
 			'lead' => [
@@ -194,7 +211,18 @@ final class YourBrain_Shindan_Bridge {
 			],
 			'answers' => json_decode($row['answers'], true),
 			'result' => json_decode($row['result_json'], true),
-		], 200);
+		];
+	}
+
+	public function get_submission(WP_REST_Request $request): WP_REST_Response {
+		$id = sanitize_text_field($request['id']);
+		$row = $this->get_submission_row($id);
+
+		if (!$row) {
+			return new WP_REST_Response(['message' => 'Not found'], 404);
+		}
+
+		return new WP_REST_Response($this->format_submission_response($row), 200);
 	}
 
 	public function register_admin_page(): void {

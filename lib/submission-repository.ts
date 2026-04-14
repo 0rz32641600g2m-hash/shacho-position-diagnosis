@@ -88,6 +88,27 @@ function buildAdminPostUrl() {
   return url.toString();
 }
 
+function buildAdminPostFetchUrl(id: string) {
+  const base = process.env.WORDPRESS_API_BASE;
+
+  if (!base) {
+    throw new Error("WordPress APIの接続先が設定されていません。");
+  }
+
+  const token = process.env.WORDPRESS_API_TOKEN;
+  const siteBase = base.replace(/\/wp-json\/yourbrain-shindan\/v1\/?$/, "");
+  const url = new URL("/wp-admin/admin-post.php", siteBase);
+
+  url.searchParams.set("action", "yourbrain_shindan_fetch");
+  url.searchParams.set("id", id);
+
+  if (token) {
+    url.searchParams.set("token", token);
+  }
+
+  return url.toString();
+}
+
 async function createWordPressSubmissionViaAdminPost(submission: CreateSubmissionInput) {
   const body = new URLSearchParams({
     payload: JSON.stringify(submission)
@@ -115,14 +136,38 @@ async function getWordPressSubmissionById(id: string) {
     throw new Error("WordPress APIの接続先が設定されていません。");
   }
 
-  const response = await fetch(`${base}/submissions/${id}`, {
+  const url = new URL(`${base}/submissions/${id}`);
+
+  if (process.env.WORDPRESS_API_TOKEN) {
+    url.searchParams.set("token", process.env.WORDPRESS_API_TOKEN);
+  }
+
+  const response = await fetch(url.toString(), {
     headers: process.env.WORDPRESS_API_TOKEN
-      ? new Headers({
-          "X-Yourbrain-Shindan-Token": process.env.WORDPRESS_API_TOKEN
-        })
+      ? undefined
       : new Headers({
           Authorization: getWordPressAuthHeader()
         }),
+    cache: "no-store"
+  });
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    const message = await response.text();
+    if (message && isHtml403Response(message)) {
+      return getWordPressSubmissionViaAdminPost(id);
+    }
+    throw new Error(message || "WordPressからの取得に失敗しました。");
+  }
+
+  return (await response.json()) as DiagnosisSubmission;
+}
+
+async function getWordPressSubmissionViaAdminPost(id: string) {
+  const response = await fetch(buildAdminPostFetchUrl(id), {
     cache: "no-store"
   });
 

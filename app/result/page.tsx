@@ -18,7 +18,17 @@ export default async function ResultPage({ searchParams }: ResultPageProps) {
   const resolvedParams = searchParams ? await searchParams : {};
   const submissionId = typeof resolvedParams.id === "string" ? resolvedParams.id : undefined;
   const serialized = typeof resolvedParams.data === "string" ? resolvedParams.data : undefined;
-  const savedSubmission = submissionId ? await findSubmissionById(submissionId) : null;
+  let savedSubmission = null;
+
+  if (submissionId) {
+    try {
+      savedSubmission = await findSubmissionById(submissionId);
+    } catch (error) {
+      console.error("result fetch failed", error);
+      savedSubmission = null;
+    }
+  }
+
   const answers = savedSubmission?.answers ?? deserializeAnswers(serialized);
 
   if (!answers) {
