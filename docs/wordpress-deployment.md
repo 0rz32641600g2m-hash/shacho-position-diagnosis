@@ -18,7 +18,14 @@
 
 - `wordpress-plugin/yourbrain-shindan-bridge/` を配置
 - 有効化でカスタムテーブル作成
-- Application Password 付きユーザーを作成
+- `wp-config.php` に共有トークンを設定
+
+```php
+define('YOURBRAIN_SHINDAN_API_TOKEN', 'replace-with-shared-secret');
+```
+
+- Vercel 側にも同じ `WORDPRESS_API_TOKEN` を設定
+- `Authorization` ヘッダーではなく独自トークンを優先利用
 
 ## 公開方式
 

@@ -11,6 +11,7 @@ if (!defined('ABSPATH')) {
 
 final class YourBrain_Shindan_Bridge {
 	private string $table_name;
+	private string $token_option_name = 'yourbrain_shindan_api_token';
 
 	public function __construct() {
 		global $wpdb;
@@ -65,7 +66,48 @@ final class YourBrain_Shindan_Bridge {
 	}
 
 	public function authorize_api(): bool {
-		return current_user_can('manage_options');
+		if (current_user_can('manage_options')) {
+			return true;
+		}
+
+		$configured_token = $this->get_api_token();
+		$request_token = $this->get_request_token();
+
+		if (!$configured_token || !$request_token) {
+			return false;
+		}
+
+		return hash_equals($configured_token, $request_token);
+	}
+
+	private function get_api_token(): string {
+		if (defined('YOURBRAIN_SHINDAN_API_TOKEN') && YOURBRAIN_SHINDAN_API_TOKEN) {
+			return (string) YOURBRAIN_SHINDAN_API_TOKEN;
+		}
+
+		$env_token = getenv('YOURBRAIN_SHINDAN_API_TOKEN');
+
+		if (is_string($env_token) && $env_token !== '') {
+			return $env_token;
+		}
+
+		$option_token = get_option($this->token_option_name, '');
+
+		return is_string($option_token) ? $option_token : '';
+	}
+
+	private function get_request_token(): string {
+		$header_token = isset($_SERVER['HTTP_X_YOURBRAIN_SHINDAN_TOKEN'])
+			? sanitize_text_field(wp_unslash($_SERVER['HTTP_X_YOURBRAIN_SHINDAN_TOKEN']))
+			: '';
+
+		if ($header_token !== '') {
+			return $header_token;
+		}
+
+		$param_token = isset($_GET['token']) ? sanitize_text_field(wp_unslash($_GET['token'])) : '';
+
+		return $param_token;
 	}
 
 	public function create_submission(WP_REST_Request $request): WP_REST_Response {

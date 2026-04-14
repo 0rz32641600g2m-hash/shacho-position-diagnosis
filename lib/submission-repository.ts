@@ -6,8 +6,10 @@ type CreateSubmissionInput = DiagnosisSubmission;
 function hasWordPressBackend() {
   return Boolean(
     process.env.WORDPRESS_API_BASE &&
-      process.env.WORDPRESS_API_USER &&
-      process.env.WORDPRESS_API_APP_PASSWORD
+      (
+        process.env.WORDPRESS_API_TOKEN ||
+        (process.env.WORDPRESS_API_USER && process.env.WORDPRESS_API_APP_PASSWORD)
+      )
   );
 }
 
@@ -22,6 +24,21 @@ function getWordPressAuthHeader() {
   return `Basic ${Buffer.from(`${user}:${password}`).toString("base64")}`;
 }
 
+function buildWordPressHeaders() {
+  const headers = new Headers({
+    "Content-Type": "application/json"
+  });
+  const token = process.env.WORDPRESS_API_TOKEN;
+
+  if (token) {
+    headers.set("X-Yourbrain-Shindan-Token", token);
+    return headers;
+  }
+
+  headers.set("Authorization", getWordPressAuthHeader());
+  return headers;
+}
+
 async function createWordPressSubmission(submission: CreateSubmissionInput) {
   const base = process.env.WORDPRESS_API_BASE;
 
@@ -31,10 +48,7 @@ async function createWordPressSubmission(submission: CreateSubmissionInput) {
 
   const response = await fetch(`${base}/submissions`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: getWordPressAuthHeader()
-    },
+    headers: buildWordPressHeaders(),
     body: JSON.stringify(submission),
     cache: "no-store"
   });
@@ -53,9 +67,13 @@ async function getWordPressSubmissionById(id: string) {
   }
 
   const response = await fetch(`${base}/submissions/${id}`, {
-    headers: {
-      Authorization: getWordPressAuthHeader()
-    },
+    headers: process.env.WORDPRESS_API_TOKEN
+      ? new Headers({
+          "X-Yourbrain-Shindan-Token": process.env.WORDPRESS_API_TOKEN
+        })
+      : new Headers({
+          Authorization: getWordPressAuthHeader()
+        }),
     cache: "no-store"
   });
 
