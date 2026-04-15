@@ -158,19 +158,20 @@ export function DiagnosisForm() {
           Shacho Position Diagnosis
         </p>
         <h1 className="mt-4 max-w-xl font-serif text-4xl leading-tight sm:text-5xl">
-          社長の形勢診断
+          社長、今の一手は攻めですか。受けですか。
         </h1>
         <p className="mt-5 max-w-xl text-sm leading-7 text-slate-200 sm:text-base">
-          12項目の簡易入力から、今の局面が
-          <span className="font-semibold text-white">「攻める」「守る」「盤面を整える」</span>
-          のどこに近いかを可視化します。
+          12項目の簡易入力で、今の局面と次の一手候補を可視化。
+          <span className="font-semibold text-white">
+            将棋のように、御社の今の形勢を評価値で診断します。
+          </span>
         </p>
 
         <div className="mt-8 grid gap-4 rounded-[24px] border border-white/10 bg-white/5 p-5">
           <div>
-            <p className="text-sm font-semibold text-white">3分で終わる経営の現在地チェック</p>
+            <p className="text-sm font-semibold text-white">3分で終わる、経営の形勢判断</p>
             <p className="mt-2 text-sm leading-7 text-slate-300">
-              将棋中継のように、今の局面、守りと攻めのバランス、次の一手候補が一目で分かります。
+              将棋中継のように、今の局面、評価値、次の一手候補まで一目で分かります。
             </p>
           </div>
           <ProgressBar current={completed} total={total} />
@@ -181,10 +182,10 @@ export function DiagnosisForm() {
             1. 現在の局面を判断
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-            2. 守り / 攻めの比重を可視化
+            2. 形勢を評価値で見える化
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-            3. 次の一手候補を提示
+            3. 本筋の一手と悪手を整理
           </div>
         </div>
       </SectionCard>
@@ -211,7 +212,7 @@ export function DiagnosisForm() {
               <h3 className="mt-2 text-xl font-semibold text-ink">診断前にご連絡先をご入力ください</h3>
             </div>
             <p className="text-sm text-slate-500">
-              トラブル回避とご案内品質向上のため、先に情報をご入力ください。
+              ご相談時の行き違いを避けるため、先に基本情報をご入力ください。
             </p>
           </div>
 
@@ -318,7 +319,7 @@ export function DiagnosisForm() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-semibold text-ink">入力完了で診断結果へ進みます</p>
-              <p className="text-sm text-slate-500">未入力がある場合はその場で分かりやすく案内します。</p>
+              <p className="text-sm text-slate-500">未入力がある場合は、その場で次に埋める項目をご案内します。</p>
               {submitError ? (
                 <p className="mt-2 text-sm font-medium text-rose-600">{submitError}</p>
               ) : null}

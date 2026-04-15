@@ -45,7 +45,7 @@ export const questionDefinitions: QuestionDefinition[] = [
   {
     key: "topConcerns",
     title: "今一番の悩み",
-    description: "あてはまるものを複数選択できます",
+    description: "あてはまるものを複数選べます。今どこで手が止まりやすいかを見る設問です。",
     required: true,
     multiple: true,
     category: "基本情報",
@@ -63,6 +63,7 @@ export const questionDefinitions: QuestionDefinition[] = [
   {
     key: "cashMonths",
     title: "手元資金は月商の何か月分ありますか",
+    description: "守りの厚みを見るための設問です。",
     required: true,
     category: "財務",
     options: [
@@ -76,6 +77,7 @@ export const questionDefinitions: QuestionDefinition[] = [
   {
     key: "profitStatus",
     title: "直近の利益状況に近い感覚はどれですか",
+    description: "攻めに出る前の持久力を測る目安です。",
     required: true,
     category: "財務",
     options: [
@@ -89,6 +91,7 @@ export const questionDefinitions: QuestionDefinition[] = [
   {
     key: "cashAnxiety",
     title: "資金繰りへの不安はありますか",
+    description: "玉の堅さにあたる安全度を見ています。",
     required: true,
     category: "財務",
     options: [
@@ -101,6 +104,7 @@ export const questionDefinitions: QuestionDefinition[] = [
   {
     key: "customerAcquisition",
     title: "新規顧客獲得は安定していますか",
+    description: "攻め駒が安定して働いているかを見る設問です。",
     required: true,
     category: "売上・マーケティング",
     options: [
@@ -113,6 +117,7 @@ export const questionDefinitions: QuestionDefinition[] = [
   {
     key: "salesVisibility",
     title: "売上の先行きはどれくらい見えていますか",
+    description: "何手先まで読めているかの目安です。",
     required: true,
     category: "売上・マーケティング",
     options: [
@@ -125,6 +130,7 @@ export const questionDefinitions: QuestionDefinition[] = [
   {
     key: "grossProfitVisibility",
     title: "粗利の高い商品・低い商品を把握していますか",
+    description: "どの攻め筋が効くかを見極めるための土台です。",
     required: true,
     category: "売上・マーケティング",
     options: [
@@ -136,6 +142,7 @@ export const questionDefinitions: QuestionDefinition[] = [
   {
     key: "monthlyTiming",
     title: "月次の数字はいつ見られますか",
+    description: "盤面把握のスピードに関わります。",
     required: true,
     category: "経営管理",
     options: [
@@ -148,6 +155,7 @@ export const questionDefinitions: QuestionDefinition[] = [
   {
     key: "cashflowTable",
     title: "資金繰り表はありますか",
+    description: "先の展開を読むための土台です。",
     required: true,
     category: "経営管理",
     options: [
@@ -159,6 +167,7 @@ export const questionDefinitions: QuestionDefinition[] = [
   {
     key: "decisionConfidence",
     title: "数字をもとに採用・広告・投資判断ができていますか",
+    description: "読みの深さと、手の精度を見る設問です。",
     required: true,
     category: "経営管理",
     options: [

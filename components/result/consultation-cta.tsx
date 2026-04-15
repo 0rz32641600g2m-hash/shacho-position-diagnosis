@@ -10,11 +10,11 @@ export function ConsultationCta({ result }: { result: DiagnosisResult }) {
             個別診断のご案内
           </p>
           <h2 className="mt-2 text-2xl font-semibold text-ink">
-            {result.overallPhase}の今だからこそ、次の一手を具体化しませんか
+            局面が見えた今こそ、御社の本筋の一手を整理しませんか
           </h2>
           <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">
-            この診断は簡易版です。実際には粗利構造・固定費・回収サイト・投資余力まで見ると、
-            どこまで攻めてよいかがより明確になります。
+            この診断で分かるのは局面までです。将棋でいえば、形勢判断の次に必要なのは具体的な読みです。
+            実際にどこまで攻めてよいかは、粗利構造・固定費・回収サイトまで見て初めて明確になります。
           </p>
         </div>
 
@@ -24,12 +24,6 @@ export function ConsultationCta({ result }: { result: DiagnosisResult }) {
             href="#"
           >
             無料で個別診断を相談する
-          </a>
-          <a
-            className="inline-flex items-center justify-center rounded-full border border-navy-200 bg-white px-6 py-3 text-sm font-semibold text-navy-800 transition hover:border-navy-300 hover:bg-mist-50"
-            href="#"
-          >
-            詳しいレポートを受け取る
           </a>
         </div>
       </div>

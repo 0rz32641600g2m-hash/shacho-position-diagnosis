@@ -70,8 +70,19 @@ export function SummaryBand({ result }: { result: DiagnosisResult }) {
             </p>
             <h1 className="mt-3 text-3xl font-semibold text-ink">今の自社の状況</h1>
             <p className="mt-4 text-sm leading-8 text-slate-700 sm:text-base">{result.summaryComment}</p>
-            <div className="mt-5 rounded-[20px] border border-slate-200 bg-mist-50 px-4 py-4">
-              <p className="text-sm font-medium leading-7 text-slate-700">{result.shortMessage}</p>
+            <div className="mt-5 grid gap-3 rounded-[20px] border border-slate-200 bg-mist-50 px-4 py-4 sm:grid-cols-[0.95fr_1.05fr]">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-navy-700">
+                  局面名
+                </p>
+                <p className="mt-2 text-lg font-semibold text-ink">{result.overallPhase}</p>
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-navy-700">
+                  寸評
+                </p>
+                <p className="mt-2 text-sm font-medium leading-7 text-slate-700">{result.shortMessage}</p>
+              </div>
             </div>
           </div>
         </div>

@@ -34,6 +34,11 @@ export function NextMovesPanel({ moves, badMoves }: { moves: NextMove[]; badMove
                       Best
                     </span>
                   ) : null}
+                  {move.categoryLabel ? (
+                    <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-navy-700">
+                      {move.categoryLabel}
+                    </span>
+                  ) : null}
                 </div>
               </div>
               <h3 className="mt-4 text-sm font-semibold leading-6 text-ink">{move.title}</h3>
@@ -70,6 +75,11 @@ export function NextMovesPanel({ moves, badMoves }: { moves: NextMove[]; badMove
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-sm font-semibold text-rose-700">
                   {index + 1}
                 </span>
+                {move.categoryLabel ? (
+                  <span className="rounded-full border border-rose-200 bg-white px-2.5 py-1 text-xs font-semibold text-rose-700">
+                    {move.categoryLabel}
+                  </span>
+                ) : null}
               </div>
               <h3 className="mt-4 text-sm font-semibold leading-6 text-ink">{move.title}</h3>
               <div className="mt-4 flex items-end justify-between gap-4">

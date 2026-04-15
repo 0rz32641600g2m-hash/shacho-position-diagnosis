@@ -9,10 +9,10 @@ const accents: Record<string, string> = {
 };
 
 const descriptions: Record<string, string> = {
-  defense: "手元資金、利益状況、資金繰り不安、資金繰り表の有無から見た守りの強さです。",
-  offense: "新規顧客の安定性、売上見通し、粗利把握から見た攻めの強さです。",
-  boardAwareness: "月次数字の速さ、資金繰り表、利益や粗利の把握状況から見た現状把握の力です。",
-  decisionMaking: "採用・広告・投資判断を数字で支えられているかを見る項目です。"
+  defense: "玉の堅さにあたる指標です。資金余力、利益状況、固定費耐性、資金繰りの安全度を見ています。",
+  offense: "攻め駒の働きにあたる指標です。集客再現性、売上の伸び、粗利の取りやすさを見ています。",
+  boardAwareness: "局面の見え方にあたる指標です。月次の速さ、粗利把握、資金繰り表の整備度を見ています。",
+  decisionMaking: "何手先まで読めているかを見る指標です。採用・広告・投資判断の精度を支える力です。"
 };
 
 export function ScoreGrid({ scores }: { scores: DiagnosisResult["scores"] }) {

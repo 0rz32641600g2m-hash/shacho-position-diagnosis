@@ -60,7 +60,7 @@ const scoreLabels: Record<ScoreKey, string> = {
   defense: "守備力",
   offense: "攻撃力",
   boardAwareness: "盤面把握力",
-  decisionMaking: "意思決定力"
+  decisionMaking: "読みの力"
 };
 
 function average(values: number[]) {
@@ -71,27 +71,27 @@ function describeScore(score: number) {
   if (score >= 75) {
     return {
       tone: "強みあり",
-      description: "基盤が整っており、次の施策を前向きに打ちやすい状態です。"
+      description: "この軸はよく整っており、本筋の一手を前向きに選びやすい状態です。"
     };
   }
 
   if (score >= 55) {
     return {
       tone: "伸びしろあり",
-      description: "土台はありますが、局面を安定させるための補強余地があります。"
+      description: "大崩れはしていませんが、もう一段手厚くすると局面が安定します。"
     };
   }
 
   if (score >= 35) {
     return {
       tone: "要補強",
-      description: "大きな判断を急ぐ前に、見える化や備えの整備が有効です。"
+      description: "強く踏み込む前に、形を整えてから動くほうが安全です。"
     };
   }
 
   return {
     tone: "優先対応",
-    description: "経営判断の前提が崩れやすく、まず守りの再構築が必要です。"
+    description: "この軸が弱く、無理攻めをすると形勢を悪くしやすい状態です。"
   };
 }
 

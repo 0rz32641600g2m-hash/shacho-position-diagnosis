@@ -17,7 +17,14 @@ export type QuestionKey = SingleValue | MultiValue;
 
 export type ScoreKey = "defense" | "offense" | "boardAwareness" | "decisionMaking";
 
-export type Phase = "攻勢局面" | "持久戦局面" | "守勢局面" | "盤面整理局面";
+export type Phase =
+  | "序盤整備局面"
+  | "盤面整理局面"
+  | "中盤競り合い局面"
+  | "受け優先局面"
+  | "優勢拡大型"
+  | "逆転含み局面"
+  | "終盤勝負局面";
 export type Momentum = "優勢" | "やや優勢" | "互角" | "やや苦戦" | "苦戦";
 export type OverallGrade = "A" | "B" | "C" | "D" | "E";
 
@@ -62,6 +69,7 @@ export type NextMove = {
   title: string;
   evaluationDelta: number;
   deltaLabel: string;
+  categoryLabel?: string;
   best?: boolean;
 };
 
