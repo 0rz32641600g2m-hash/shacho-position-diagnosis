@@ -151,18 +151,16 @@ export function DiagnosisForm() {
       });
   };
 
-  const featureItems = ["3分で完了", "12項目の簡易入力", "今の局面を可視化", "次の一手候補が分かる"];
-
   return (
     <div className="space-y-7">
       <SectionCard className="overflow-hidden bg-[linear-gradient(150deg,rgba(8,17,32,0.98),rgba(18,45,79,0.96)_58%,rgba(196,169,102,0.18))] p-0 text-white">
-        <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:p-10">
+        <div className="p-6 sm:p-8 lg:p-10">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-gold-300">
-              Shacho Position Diagnosis
+              経営の局面判断を、将棋の形勢判断のように
             </p>
             <h1 className="mt-4 max-w-3xl font-serif text-4xl leading-tight sm:text-5xl lg:text-6xl">
-              社長、今の一手は攻めですか。受けですか。
+              社長の形勢診断
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-slate-100 sm:text-lg">
               資金繰り・利益・売上の先行き・月次管理の12項目から、
@@ -174,26 +172,6 @@ export function DiagnosisForm() {
               投資・採用・値上げ・新規施策の判断に迷う社長へ。
               感覚だけでは見えにくい「今の局面」を整理し、次の一手を考えるための診断です。
             </p>
-          </div>
-
-          <div className="rounded-[28px] border border-white/10 bg-white/8 p-5 shadow-soft backdrop-blur">
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-              {featureItems.map((item) => (
-                <div
-                  key={item}
-                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/8 px-4 py-3 text-sm font-semibold text-white"
-                >
-                  <span className="h-2 w-2 rounded-full bg-gold-300" />
-                  {item}
-                </div>
-              ))}
-            </div>
-            <div className="mt-5 rounded-2xl border border-white/10 bg-white/8 p-4">
-              <p className="text-sm font-semibold text-white">入力の進捗</p>
-              <div className="mt-3">
-                <ProgressBar current={completed} total={total} />
-              </div>
-            </div>
           </div>
         </div>
       </SectionCard>
@@ -325,9 +303,12 @@ export function DiagnosisForm() {
 
         <div className="sticky bottom-4 rounded-[24px] border border-slate-200 bg-white/95 p-4 shadow-soft backdrop-blur">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
+            <div className="flex-1">
               <p className="text-sm font-semibold text-ink">入力完了で診断結果へ進みます</p>
               <p className="text-sm text-slate-500">未入力がある場合は、その場で次に埋める項目をご案内します。</p>
+              <div className="mt-3 max-w-md">
+                <ProgressBar current={completed} total={total} />
+              </div>
               {submitError ? (
                 <p className="mt-2 text-sm font-medium text-rose-600">{submitError}</p>
               ) : null}
