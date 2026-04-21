@@ -151,55 +151,63 @@ export function DiagnosisForm() {
       });
   };
 
-  return (
-    <div className="grid gap-6 lg:grid-cols-[0.9fr_1.35fr]">
-      <SectionCard className="h-fit overflow-hidden bg-[linear-gradient(160deg,rgba(8,17,32,0.98),rgba(16,35,63,0.92))] text-white">
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-gold-300">
-          Shacho Position Diagnosis
-        </p>
-        <h1 className="mt-4 max-w-xl font-serif text-4xl leading-tight sm:text-5xl">
-          社長、今の一手は攻めですか。受けですか。
-        </h1>
-        <p className="mt-5 max-w-xl text-sm leading-7 text-slate-200 sm:text-base">
-          12項目の簡易入力で、今の局面と次の一手候補を可視化。
-          <span className="font-semibold text-white">
-            将棋のように、御社の今の形勢を評価値で診断します。
-          </span>
-        </p>
+  const featureItems = ["3分で完了", "12項目の簡易入力", "今の局面を可視化", "次の一手候補が分かる"];
 
-        <div className="mt-8 grid gap-4 rounded-[24px] border border-white/10 bg-white/5 p-5">
+  return (
+    <div className="space-y-7">
+      <SectionCard className="overflow-hidden bg-[linear-gradient(150deg,rgba(8,17,32,0.98),rgba(18,45,79,0.96)_58%,rgba(196,169,102,0.18))] p-0 text-white">
+        <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:p-10">
           <div>
-            <p className="text-sm font-semibold text-white">3分で終わる、経営の形勢判断</p>
-            <p className="mt-2 text-sm leading-7 text-slate-300">
-              将棋中継のように、今の局面、評価値、次の一手候補まで一目で分かります。
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-gold-300">
+              Shacho Position Diagnosis
+            </p>
+            <h1 className="mt-4 max-w-3xl font-serif text-4xl leading-tight sm:text-5xl lg:text-6xl">
+              社長、今の一手は攻めですか。受けですか。
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-100 sm:text-lg">
+              資金繰り・利益・売上の先行き・月次管理の12項目から、
+              <span className="font-semibold text-white">御社の今の形勢を評価値で診断。</span>
+              今は攻めるべきか、まず守るべきかが、3分で見えます。
+            </p>
+
+            <p className="mt-6 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
+              投資・採用・値上げ・新規施策の判断に迷う社長へ。
+              感覚だけでは見えにくい「今の局面」を整理し、次の一手を考えるための診断です。
             </p>
           </div>
-          <ProgressBar current={completed} total={total} />
-        </div>
 
-        <div className="mt-8 grid gap-3 text-sm text-slate-200">
-          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-            1. 現在の局面を判断
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-            2. 形勢を評価値で見える化
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-            3. 本筋の一手と悪手を整理
+          <div className="rounded-[28px] border border-white/10 bg-white/8 p-5 shadow-soft backdrop-blur">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+              {featureItems.map((item) => (
+                <div
+                  key={item}
+                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/8 px-4 py-3 text-sm font-semibold text-white"
+                >
+                  <span className="h-2 w-2 rounded-full bg-gold-300" />
+                  {item}
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 rounded-2xl border border-white/10 bg-white/8 p-4">
+              <p className="text-sm font-semibold text-white">入力の進捗</p>
+              <div className="mt-3">
+                <ProgressBar current={completed} total={total} />
+              </div>
+            </div>
           </div>
         </div>
       </SectionCard>
 
       <SectionCard className="space-y-5">
-        <div className="flex flex-col gap-3 border-b border-slate-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-2 border-b border-slate-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-navy-700">
-              簡易診断フォーム
+              3分診断を始める
             </p>
-            <h2 className="mt-2 text-2xl font-semibold text-ink">現状を選ぶだけで結果が出ます</h2>
+            <h2 className="mt-2 text-2xl font-semibold text-ink">まずは必要事項をご入力ください</h2>
           </div>
           <p className="text-sm text-slate-500">
-            必須項目のみです。迷う場合は一番近い感覚で大丈夫です。
+            迷う場合は、一番近い感覚で大丈夫です。
           </p>
         </div>
 
@@ -209,10 +217,10 @@ export function DiagnosisForm() {
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-navy-700">
                 事前情報入力
               </p>
-              <h3 className="mt-2 text-xl font-semibold text-ink">診断前にご連絡先をご入力ください</h3>
+              <h3 className="mt-2 text-xl font-semibold text-ink">ご連絡先</h3>
             </div>
             <p className="text-sm text-slate-500">
-              ご相談時の行き違いを避けるため、先に基本情報をご入力ください。
+              診断結果の保存とご案内のために使用します。
             </p>
           </div>
 
